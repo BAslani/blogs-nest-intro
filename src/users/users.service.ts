@@ -1,5 +1,5 @@
-import { GetUsersParamDto } from './../dtos/get-users-param.dto';
 import { Injectable } from '@nestjs/common';
+import { GetUsersParamDto } from './dtos/get-users-param.dto';
 
 @Injectable()
 export class UsersService {
