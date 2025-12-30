@@ -1,6 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
+import { User } from './entities/user.entity';
 
 /**
  * class to handle user related operations
@@ -8,9 +11,24 @@ import { GetUsersParamDto } from './dtos/get-users-param.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
+
+  /**
+   * method to create a new user
+   */
+  public async createUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (existingUser) {
+      console.log('error');
+    }
+
+    const user = this.usersRepository.create(createUserDto);
+    return await this.usersRepository.save(user);
+  }
 
   /**
    * method to fetch all users
@@ -23,9 +41,6 @@ export class UsersService {
     console.log(getUsersParamDto);
     console.log(limit);
     console.log(page);
-    const isAuth = this.authService.isAuth();
-    if (!isAuth) throw new Error('Unauthorized');
-    console.log(isAuth);
 
     return [
       {
