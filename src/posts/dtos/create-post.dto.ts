@@ -123,7 +123,6 @@ export class CreatePostDto {
     },
   })
   @IsOptional()
-  @IsArray()
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto[];
+  metaOptions?: CreatePostMetaOptionsDto;
 }
